@@ -2,8 +2,6 @@ package ru.todo100;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.MessageSource;
 
 /**
  * The service is responsible for calculating the weight of the element of the pyramid.
@@ -83,15 +81,15 @@ public class WeightServiceImpl implements WeightService
 	 * @param level The level of the pyramid. Counting starts from 1.
 	 * @param index The index of the element of the pyramid. Counting starts from 0.
 	 * @return The result of the method, the weight of the element plus the weight of the parent elements.
-	 * @throws Exception
+	 * @throws ServiceException
 	 */
-	public float getWeight(final int level, final int index) throws ClientException
+	public float getWeight(final int level, final int index) throws ServiceException
 	{
 		if (level > maxLevel) {
-			throw new ClientException("The level above is maximum. Maximum is " + this.maxLevel + ".",400);
+			throw new ServiceException("The level above is maximum. Maximum is " + this.maxLevel + ".");
 		}
 		if (index >= level) {
-			throw new ClientException("The index is greater than level.",400);
+			throw new ServiceException("The index is greater than level.");
 		}
 		float[] result = null;
 		for (int i = 0; i < level; i++) {

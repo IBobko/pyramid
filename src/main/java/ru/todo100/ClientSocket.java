@@ -13,8 +13,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
  * @author Igor Bobko <limit-speed@yandex.ru>
  */
@@ -23,7 +21,10 @@ public class ClientSocket implements Runnable
 	private static Logger logger = LoggerFactory.getLogger(ClientSocket.class);
 	private Socket        socket;
 	private WeightService weightService;
-	private final static int MAX_REQUEST_SIZE = 1024;
+	private final static int    MAX_REQUEST_SIZE = 1024;
+	private final static String ERROR_400        = "BAD REQUEST";
+	private final static String ERROR_404        = "RESOURCE NOT FOUND";
+	private final static String OK_200           = "200 OK";
 
 	public WeightService getWeightService()
 	{
@@ -59,26 +60,32 @@ public class ClientSocket implements Runnable
 		return builder.toString();
 	}
 
-	public String[] getSlashParams(String str) throws ClientException {
-		if (str != null && str.length() > 0) {
+	public String[] getSlashParams(String str) throws ClientException
+	{
+		if (str != null && str.length() > 0)
+		{
 			return str.split("/");
 		}
-		throw new ClientException("BAD REQUEST",400);
+		throw new ClientException(ERROR_400, 400);
 	}
 
-	public String[] getQueryParams(String str) throws ClientException {
-		if (str != null && str.length() > 0) {
-			str = str.replace("?","");
+	public String[] getQueryParams(String str) throws ClientException
+	{
+		if (str != null && str.length() > 0)
+		{
+			str = str.replace("?", "");
 
 			Pattern pattern = Pattern.compile("level=(\\d+)&index=(\\d+)");
 			Matcher matcher = pattern.matcher(str);
-			if (!matcher.matches()) {
-				throw new ClientException("BAD REQUEST",400);
+			if (!matcher.matches())
+			{
+				throw new ClientException(ERROR_400, 400);
 			}
-			return new String[]{matcher.group(1),matcher.group(2)};
+			return new String[] {matcher.group(1), matcher.group(2)};
 		}
-		throw new ClientException("BAD REQUEST",400);
+		throw new ClientException(ERROR_400, 400);
 	}
+
 	public void run()
 	{
 		logger.info("Got a client :)");
@@ -93,32 +100,39 @@ public class ClientSocket implements Runnable
 
 				DataInputStream in = new DataInputStream(sin);
 
-
 				String request = getRequestString(in);
 
-
 				int getPosition = request.indexOf("GET");
-				if (getPosition == -1) {
-					throw new ClientException("BAD REQUEST",400);
+				if (getPosition == -1)
+				{
+					throw new ClientException(ERROR_400, 400);
 				}
 				int httpVersionPosition = request.indexOf("HTTP");
-				if (httpVersionPosition == -1 || getPosition > httpVersionPosition){
-					throw new ClientException("BAD REQUEST",400);
+				if (httpVersionPosition == -1 || getPosition > httpVersionPosition)
+				{
+					throw new ClientException(ERROR_400, 400);
 				}
 				String query = request.substring(getPosition + 3, httpVersionPosition).trim();
 
 				Pattern pattern = Pattern.compile("/weight(\\?|/)(.*)");
 				Matcher matcher = pattern.matcher(query);
-				if (!matcher.matches()) {
-					throw new ClientException("RESOURCE IS NOT FOUND",404);
+				if (!matcher.matches())
+				{
+					throw new ClientException(ERROR_404, 404);
 				}
 
 				String[] params;
 
-				switch(matcher.group(1)) {
-					case "?": params = getQueryParams(matcher.group(2)); break;
-					case "/": params = getSlashParams(matcher.group(2)); break;
-					default : throw new ClientException("BAD REQUEST",400);
+				switch (matcher.group(1))
+				{
+					case "?":
+						params = getQueryParams(matcher.group(2));
+						break;
+					case "/":
+						params = getSlashParams(matcher.group(2));
+						break;
+					default:
+						throw new ClientException(ERROR_400, 400);
 				}
 
 				Integer level;
@@ -127,29 +141,46 @@ public class ClientSocket implements Runnable
 				{
 					level = Integer.parseInt(params[0]);
 					index = Integer.parseInt(params[1]);
-				} catch(NumberFormatException e) {
-					throw new ClientException("Can't convert to integer " + params[0] + " or " + params[1],400);
+				}
+				catch (NumberFormatException e)
+				{
+					throw new ClientException("Can't convert to integer " + params[0] + " or " + params[1], 400);
 				}
 
-				float weight = getWeightService().getWeight(level, index);
-				jsonResult.put("level",level);
-				jsonResult.put("index",index);
-				jsonResult.put("result",weight);
-				jsonResult.put("code","200 OK");
+				try
+				{
+					float weight = getWeightService().getWeight(level, index);
+					jsonResult.put("level", level);
+					jsonResult.put("index", index);
+					jsonResult.put("result", weight);
+					jsonResult.put("code", OK_200);
+				}
+				catch (ServiceException e)
+				{
+					throw new ClientException(e.getMessage(), 400);
+				}
+
 			}
-			catch (ClientException e)
+			catch (Exception e)
 			{
-				jsonResult.put("error",e.getMessage());
-				jsonResult.put("code",e.getCode());
+				jsonResult.put("error", e.getMessage());
+				if (e instanceof ClientException)
+				{
+					jsonResult.put("code", ((ClientException) e).getCode());
+				}
+				else
+				{
+					jsonResult.put("code", ERROR_400);
+				}
 			}
 			finally
 			{
 				String result = "HTTP/1.1 " + jsonResult.getString("code") + "\n" +
-						"Content-Type: application/json; charset=UTF-8\n" +
-						"Content-Length: " + (jsonResult.toString().length()+1) + "\n" +
-						"Connection: keep-alive\n\n" +
-						"\n" +
-						jsonResult.toString() + "\n";
+								"Content-Type: application/json; charset=UTF-8\n" +
+								"Content-Length: " + (jsonResult.toString().length() + 1) + "\n" +
+								"Connection: keep-alive\n\n" +
+								"\n" +
+								jsonResult.toString() + "\n";
 
 				System.out.println(jsonResult.toString());
 				out.writeUTF(result);

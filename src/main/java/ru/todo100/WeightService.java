@@ -13,7 +13,7 @@ public interface WeightService
 	 * @param level The level of the pyramid. Counting starts from 1.
 	 * @param index The index of the element of the pyramid. Counting starts from 0.
 	 * @return The result of the method, the weight of the element plus the weight of the parent elements.
-	 * @throws Exception
+	 * @throws ServiceException
 	 */
-	float getWeight(final int level,final int index) throws ClientException;
+	float getWeight(final int level,final int index) throws ServiceException;
 }
