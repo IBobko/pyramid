@@ -1,7 +1,10 @@
-package ru.todo100;
+package ru.todo100.pyramid;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import ru.todo100.pyramid.config.Config;
+import ru.todo100.pyramid.socket.Server;
 
 /**
  * @author Igor Bobko <limit-speed@yandex.ru>

@@ -1,7 +1,10 @@
-package ru.todo100;
+package ru.todo100.pyramid.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ru.todo100.pyramid.exception.ServiceException;
+import ru.todo100.pyramid.service.WeightService;
 
 /**
  * The service is responsible for calculating the weight of the element of the pyramid.

@@ -1,4 +1,4 @@
-package ru.todo100;
+package ru.todo100.pyramid.socket.impl;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
+
+import ru.todo100.pyramid.service.WeightService;
+import ru.todo100.pyramid.socket.ClientSocket;
+import ru.todo100.pyramid.socket.Server;
 
 /**
  * A Server that accepts client requests for later processing service.
@@ -18,9 +21,11 @@ import org.springframework.context.annotation.Bean;
  * @author Igor Bobko <limit-speed@yandex.ru>
  */
 
+
 public class ServerImpl implements Server
 {
 	private static Logger logger = LoggerFactory.getLogger(ServerImpl.class);
+
 	@Autowired
 	private MessageSource messageSource;
 	@Autowired

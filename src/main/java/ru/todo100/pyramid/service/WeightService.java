@@ -1,10 +1,15 @@
-package ru.todo100;
+package ru.todo100.pyramid.service;
+
+import org.springframework.stereotype.Service;
+
+import ru.todo100.pyramid.exception.ServiceException;
 
 /**
  * The interface of service for calculating the weight of the element of the pyramid.
  *
  * @author Igor Bobko <limit-speed@yandex.ru>
  */
+@Service
 public interface WeightService
 {
 	/**

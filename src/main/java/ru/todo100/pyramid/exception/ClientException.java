@@ -1,4 +1,4 @@
-package ru.todo100;
+package ru.todo100.pyramid.exception;
 
 /**
  * @author Igor Bobko <limit-speed@yandex.ru>

@@ -1,4 +1,4 @@
-package ru.todo100;
+package ru.todo100.pyramid.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,6 +12,10 @@ import java.util.regex.Pattern;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ru.todo100.pyramid.service.WeightService;
+import ru.todo100.pyramid.exception.ClientException;
+import ru.todo100.pyramid.exception.ServiceException;
 
 /**
  * @author Igor Bobko <limit-speed@yandex.ru>

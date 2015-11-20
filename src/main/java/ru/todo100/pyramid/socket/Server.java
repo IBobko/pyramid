@@ -1,4 +1,4 @@
-package ru.todo100;
+package ru.todo100.pyramid.socket;
 
 /**
  * A Server that accepts client requests for later processing service.
