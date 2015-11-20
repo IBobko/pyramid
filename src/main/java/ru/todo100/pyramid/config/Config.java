@@ -16,7 +16,7 @@ import ru.todo100.pyramid.service.WeightService;
 import ru.todo100.pyramid.service.impl.WeightServiceImpl;
 
 @Configuration
-@PropertySource("classpath:config.properties")
+@PropertySource("file:config.properties")
 @ComponentScan("ru.todo100.pyramid")
 public class Config
 {
