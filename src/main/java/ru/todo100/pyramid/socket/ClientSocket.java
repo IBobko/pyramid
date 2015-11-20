@@ -185,8 +185,6 @@ public class ClientSocket implements Runnable
 								"Content-Length: " + (message.length() + 1) + "\n" +
 								"Connection: keep-alive\n\n" +
 								message + "\n";
-
-				System.out.println(jsonResult.toString());
 				out.writeUTF(result);
 				out.flush();
 				out.close();
