@@ -179,12 +179,12 @@ public class ClientSocket implements Runnable
 			}
 			finally
 			{
+				String message = jsonResult.toString();
 				String result = "HTTP/1.1 " + jsonResult.getString("code") + "\n" +
 								"Content-Type: application/json; charset=UTF-8\n" +
-								"Content-Length: " + (jsonResult.toString().length() + 1) + "\n" +
+								"Content-Length: " + (message.length() + 1) + "\n" +
 								"Connection: keep-alive\n\n" +
-								"\n" +
-								jsonResult.toString() + "\n";
+								message + "\n";
 
 				System.out.println(jsonResult.toString());
 				out.writeUTF(result);
