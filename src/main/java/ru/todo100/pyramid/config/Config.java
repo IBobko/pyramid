@@ -37,7 +37,6 @@ public class Config
 	}
 
 	@Bean
-
 	public WeightService weightService() {
 		int maxLevel = env.getProperty("weightService.maxLevel",Integer.class);
 		int pieceWeight = env.getProperty("weightService.pieceWeight",Integer.class);
